@@ -1,0 +1,14 @@
+<nz-layout class="layout">
+  <nz-header>
+    <div class="logo"></div>
+    <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" style="line-height: 64px;">
+      <li nz-menu-item>nav 1</li>
+      <li nz-menu-item>nav 2</li>
+      <li nz-menu-item>nav 3</li>
+    </ul>
+  </nz-header>
+  <nz-content style="padding:0 50px;min-height: 800px">
+    <button nz-button nzType="primary" (click)="login()">登录</button>
+    <button nz-button nzType="primary" (click)="getMenus()">获取菜单</button>
+  </nz-content>
+</nz-layout>
