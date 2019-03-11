@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {EtHttpClient} from '../../easytune-mobile-http/http';
 import {NzNotificationService} from 'ng-zorro-antd';
 import {StorageService} from '../storage.service';
-import {Optional} from '../../optional/optional';
+import {Optional} from '../../stream-js/optional/optional';
 
 @Component({
   selector: 'app-root',
