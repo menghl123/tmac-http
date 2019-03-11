@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {EtHttpClient} from '../../easytune-mobile-http/http';
 import {NzNotificationService} from 'ng-zorro-antd';
 import {StorageService} from '../storage.service';
+import {Optional} from '../../optional/optional';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,10 @@ export class AppComponent {
 
   constructor(private notification: NzNotificationService,
               private storageService: StorageService) {
+    const a = Optional.ofNullable<AppComponent>(null)
+      .orElse(this);
+    console.log(a);
+
     EtHttpClient.configBuilder()
       .baseUrl('http://localhost:8080/api')
       .addInterceptor({
