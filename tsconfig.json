@@ -17,6 +17,20 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "stream-js": [
+        "dist/stream-js"
+      ],
+      "stream-js/*": [
+        "dist/stream-js/*"
+      ],
+      "stream-ts": [
+        "dist/stream-ts"
+      ],
+      "stream-ts/*": [
+        "dist/stream-ts/*"
+      ]
+    }
   }
 }

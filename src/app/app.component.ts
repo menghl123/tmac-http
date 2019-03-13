@@ -2,7 +2,9 @@ import {Component} from '@angular/core';
 import {EtHttpClient} from '../../easytune-mobile-http/http';
 import {NzNotificationService} from 'ng-zorro-antd';
 import {StorageService} from '../storage.service';
-import {Optional} from '../../stream-js/optional/optional';
+import {Optional} from '../../projects/stream-js/src/lib/optional/optional';
+import {Stream} from 'stream-ts';
+import {NumberUtils} from '../../projects/stream-ts/src/lib/utils/number.utils';
 
 @Component({
   selector: 'app-root',
@@ -14,9 +16,21 @@ export class AppComponent {
 
   constructor(private notification: NzNotificationService,
               private storageService: StorageService) {
+
+    console.log(NumberUtils.randomInteger(1, 10));
+
     const a = Optional.ofNullable<AppComponent>(null)
       .orElse(this);
     console.log(a);
+
+    Stream.of([0, 1, 2, 3, 4])
+      .limit(3)
+      .forEach(item => console.log(item));
+
+    Stream.of([0, 1, 2, 3, 4])
+      .skip(2)
+      .forEach(item => console.log(item));
+
 
     EtHttpClient.configBuilder()
       .baseUrl('http://localhost:8080/api')
