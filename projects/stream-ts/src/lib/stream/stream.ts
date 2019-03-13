@@ -4,7 +4,7 @@ import {Optional} from '../optional/optional';
 import {NumberUtils} from '../utils/number.utils';
 
 export class Stream<T> {
-  private value: T[];
+  protected value: T[];
 
 
   constructor(value: T[]) {
@@ -15,6 +15,7 @@ export class Stream<T> {
     Assert.isArray(value, 'stream:of:value must be array');
     return new Stream<T>(value);
   }
+
 
   public filter(predicate: (value: T) => boolean): Stream<T> {
     Assert.nonNull(predicate, 'stream:filter:predicate can not be null');
@@ -27,15 +28,23 @@ export class Stream<T> {
     return Stream.of(this.value.map(fn));
   }
 
+  public flatMap<R>(fn: (value: T, index?: number, array?: T[]) => Stream<R>): Stream<R> {
+    Assert.nonNull(fn, 'stream:flatMap:fn can not be null');
+    const result = this.value.map(fn)
+      .map(item => item.toArray())
+      .reduce((prev, current) => prev.concat(current), []);
+    return Stream.of<R>(result);
+  }
+
   public peek(fn: (value: T) => void): Stream<T> {
     Assert.nonNull(fn, 'stream:peek:fn can not be null');
     this.value.forEach(item => fn(item));
     return this;
   }
 
-  public mapToNumber(fn: (value: T) => number): Stream<number> {
+  public mapToNumber(fn: (value: T) => number): NumberStream {
     Assert.nonNull(fn, 'stream:mapToNumber:fn can not be null');
-    return Stream.of(this.value.map(fn));
+    return new NumberStream(this.value.map(fn));
   }
 
   public distinct(fn = (a, b) => a === b): Stream<T> {
@@ -111,11 +120,11 @@ export class Stream<T> {
   }
 
   public min(fn = (a, b) => a > b): Optional<T> {
-    return this.sorted(fn).findLast();
+    return this.sorted(fn).findFirst();
   }
 
   public max(fn = (a, b) => a > b): Optional<T> {
-    return this.sorted(fn).findFirst();
+    return this.sorted(fn).findLast();
   }
 
   public sorted(fn = (a, b) => a > b): Stream<T> {
@@ -125,6 +134,76 @@ export class Stream<T> {
 
   public count(): number {
     return this.value.length;
+  }
+
+
+}
+
+
+export class NumberStream extends Stream<number> {
+
+
+  constructor(value: number[]) {
+    super(value);
+  }
+
+  public static from(start: number, end: number): NumberStream {
+    Assert.nonNull(start, 'NumberStream:from:start must not be null');
+    Assert.nonNull(end, 'NumberStream:from:end must not be null');
+    const result = [];
+    for (let i = Math.round(start); i < Math.round(end); i++) {
+      result.push(i);
+    }
+    return new NumberStream(result);
+  }
+
+  public sum(): number {
+    return this.reduce((prev, current) => prev + current, 0).orElse(0);
+  }
+
+  public average(): number {
+    return this.sum() / this.count();
+  }
+
+  public summaryStatistics(): NumberSummaryStatistics {
+    return new NumberSummaryStatistics(this.max().orElse(0), this.min().orElse(0), this.average(), this.sum(), this.count());
+  }
+
+}
+
+export class NumberSummaryStatistics {
+  private _max: number;
+  private _min: number;
+  private _average: number;
+  private _sum: number;
+  private _count: number;
+
+  constructor(max: number, min: number, average: number, sum: number, count: number) {
+    this._max = max;
+    this._min = min;
+    this._average = average;
+    this._sum = sum;
+    this._count = count;
+  }
+
+  get max(): number {
+    return this._max;
+  }
+
+  get min(): number {
+    return this._min;
+  }
+
+  get average(): number {
+    return this._average;
+  }
+
+  get sum(): number {
+    return this._sum;
+  }
+
+  get count(): number {
+    return this._count;
   }
 
 }

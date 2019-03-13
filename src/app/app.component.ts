@@ -5,6 +5,7 @@ import {StorageService} from '../storage.service';
 import {Optional} from '../../projects/stream-js/src/lib/optional/optional';
 import {Stream} from 'stream-ts';
 import {NumberUtils} from '../../projects/stream-ts/src/lib/utils/number.utils';
+import {NumberStream} from '../../projects/stream-ts/src/lib/stream/stream';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,17 @@ export class AppComponent {
 
   constructor(private notification: NzNotificationService,
               private storageService: StorageService) {
+    const stream = NumberStream.from(0, 100);
+    console.log(stream.sum());
+    console.log(stream.summaryStatistics());
+
+
+    const e = [1, 2, 3, 4];
+    const b = [5, 6, 7, 8, 9];
+    const c = Stream.of([e, b])
+      .flatMap(item => Stream.of(item))
+
+    console.log(c);
 
     console.log(NumberUtils.randomInteger(1, 10));
 
